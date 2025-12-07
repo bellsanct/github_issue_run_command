@@ -7,6 +7,10 @@ description: "GitHub Issue Runner for Codex (interactive issue selection)"
 このプロンプトは、Codex から `/prompts:github_issue_run` のように呼び出し、  
 ユーザーと対話しながら対象 Issue を選んで、自動でブランチ作成〜実装〜PR 作成まで行うための仕様書です。
 
+## 日本語での応答・ドキュメント
+- CLI 上での応答や説明はすべて日本語で行う。
+- PR のタイトル・本文、Issue へのコメントも日本語で記載する。
+
 ---
 
 # 🔍 最初にやること：Issue 番号をユーザーに確認する
@@ -197,6 +201,7 @@ git push -u origin <ブランチ名>
 ---
 
 ## 8. PR を作成
+- PR タイトルと本文は日本語で記載する。
 コマンド例: 
 gh pr create --title "Fix: #ISSUE_NUMBER <短い説明>" --body "<PR内容を説明する文章>"
 
@@ -206,6 +211,7 @@ gh pr create --title "Fix: #ISSUE_NUMBER <短い説明>" --body "<PR内容を説
 存在しないラベルの場合は無理せずスキップ。
 
 ## 9. Issue へのコメント（任意）
+- コメントも日本語で記載する。
 gh issue comment ISSUE_NUMBER --body "<コメント内容>"
 
 ---
