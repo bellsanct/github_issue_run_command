@@ -57,7 +57,7 @@ description: "GitHub Issue Runner for Codex (interactive issue selection)"
 7. コミット作成
 8. リモートへ push
 9. PR 作成（Issue と自動リンク）
-10. Issue へのコメント（任意）
+10. Issue へのコメント
 11. 完了報告
 
 
@@ -129,7 +129,7 @@ git checkout -b <ブランチ名>
 
 まずリポジトリ構造の確認：ls
 
-必要に応じて：ls src
+必要に応じて：ls src  
 必要に応じて：cat package.json
 
 Issue の内容に基づいて：
@@ -161,8 +161,8 @@ apply_patch を用いて次を行う：
 存在するコマンドのみ実行。
 
 例（package.json がある場合）：
-npm test
-npm run lint
+npm test  
+npm run lint  
 npm run build
 
 失敗した場合：
@@ -181,19 +181,18 @@ npm run build
 git status
 
 ### 6-2. ステージング
-git add .
-- または変更したファイルのみをaddする
+git add .  
+- または変更したファイルのみを add する  
 git add path/to/file
 
 ### 6-3. コミット
-メッセージ形式：fix: #ISSUE_NUMBER <短い説明>
+メッセージ形式：fix: #ISSUE_NUMBER <短い説明>  
 コマンド例: git commit -m "fix: #42 prevent crash when user is null"
 
 ---
 
 ## 7. リモートへ push
 git push -u origin <ブランチ名>
-
 
 エラーが出た場合は理由を説明し、安全策を案内する。
 
@@ -202,17 +201,24 @@ git push -u origin <ブランチ名>
 
 ## 8. PR を作成
 - PR タイトルと本文は日本語で記載する。
-コマンド例: 
+コマンド例:  
 gh pr create --title "Fix: #ISSUE_NUMBER <短い説明>" --body "<PR内容を説明する文章>"
 
 可能ならラベル追加：gh issue edit ISSUE_NUMBER --add-label "review-requested"
 
-
 存在しないラベルの場合は無理せずスキップ。
 
-## 9. Issue へのコメント（任意）
-- コメントも日本語で記載する。
-gh issue comment ISSUE_NUMBER --body "<コメント内容>"
+---
+
+## 9. Issue へのコメント（必須）
+PR 作成後、Issue に次の形式でコメントを投稿する。PR の URL とブランチ名を必ず埋めること。
+
+```
+gh issue comment ISSUE_NUMBER \
+  --body "🤖 **AI自動実装完了**\n\nレビュー依頼をお願いします。\n\n**プルリクエスト**: {PRのURL}\n**ブランチ**: {ブランチ名}\n\n---\nこのコメントはCodexによって自動投稿されました。\n必ず人間によるコードレビューを実施してください。"
+```
+
+ラベル付けが必要な場合はこの後に実施する。
 
 ---
 
@@ -226,4 +232,3 @@ gh issue comment ISSUE_NUMBER --body "<コメント内容>"
 - 主な変更点  
 - 実行したテスト  
 - 懸念点・レビューしてほしい点  
-
