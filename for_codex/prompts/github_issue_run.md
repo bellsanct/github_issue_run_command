@@ -1,40 +1,32 @@
 ---
-description: "GitHub Issue Runner for Codex (with argument parsing)"
+description: "GitHub Issue Runner for Codex (interactive issue selection)"
 ---
 
-# /github_issue_run コマンド（Codex 用）
+# /github_issue_run — Codex 用 Issue 自動化コマンド
 
-このプロンプトは、`/prompts:github_issue_run 1` のような  
-Codex の「引数が自動で渡らない環境」でも確実に issue 番号を取得し、  
-GitHub Issue の自動処理（ブランチ作成〜実装〜PR）を行うための仕様書です。
+このプロンプトは、Codex から `/prompts:github_issue_run` のように呼び出し、  
+ユーザーと対話しながら対象 Issue を選んで、自動でブランチ作成〜実装〜PR 作成まで行うための仕様書です。
 
+---
 
-ユーザー入力から `{issue_number}` を読み取り、これを `ISSUE_NUMBER` として扱います。
+# 🔍 最初にやること：Issue 番号をユーザーに確認する
 
-# 🔍 最初に行うこと（絶対必須）
-**ユーザーが入力した全文を必ず解析して、ISSUE_NUMBER を抽出してください。**
+1. まず、ユーザーに次のように質問してください：
 
-解析対象例：
-/prompts:github_issue_run 1
-/github_issue_run 12
-/prompts:github_issue_run 99
+   > 今回処理する GitHub Issue 番号（半角数字）を 1 つだけ入力してください。
 
-抽出ルール：
+2. ユーザーが次のメッセージで答えた内容だけを見て、  
+   **最初に出てくる連続した数字列** を `ISSUE_NUMBER` として採用してください。
+   - 例: `1` → `ISSUE_NUMBER = 1`
+   - 例: `Issue 42 でお願いします` → `ISSUE_NUMBER = 42`
+3. 数字が 1 つも含まれていない場合は、
+   - 「半角数字で Issue 番号を 1 つ入力してください」と一度だけ再度聞き直してください。
+4. `ISSUE_NUMBER` が確定したら、次のようにユーザーへ宣言してから先に進みます：
 
-- 数字だけを抜き出す（最後の整数を ISSUE_NUMBER と認識）
-- 数字が存在しない場合は、「Issue 番号が指定されていないため終了します」と返して終了する
+   > Issue 番号は「ISSUE_NUMBER」として処理します。
 
-# 📌 ISSUE_NUMBER の抽出例
-
-| 入力 | 取得される ISSUE_NUMBER |
-|------|----------------------------|
-| `/prompts:github_issue_run 1` | `1` |
-| `/github_issue_run 42` | `42` |
-| `/prompts:github_issue_run    105` | `105` |
-
-抽出後は **以降の全てのコマンド内で ISSUE_NUMBER を使う**。
-
-
+これ以降は、必ずこの `ISSUE_NUMBER` を使って `gh issue view` やブランチ名を決めてください。  
+（md 内のサンプルには具体的な数字を使わず、`ISSUE_NUMBER` というプレースホルダだけを使用します）
 
 ---
 
@@ -83,10 +75,8 @@ git status --short
 - 出力が空でなければ  
   「未コミットの変更があるため、自動処理は実行しません」と説明して終了。
 
-### 0-3. リモートと gh 認証
+### 0-3. リモート検証
 git remote -v
-gh auth status
-
 - GitHub ではない or 認証エラーなら説明して終了。
 
 
