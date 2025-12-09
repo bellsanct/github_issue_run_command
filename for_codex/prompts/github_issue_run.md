@@ -43,7 +43,6 @@ description: "GitHub Issue Runner for Codex (interactive issue selection)"
 - 危険コマンド（`rm -rf` など）禁止  
 - 未コミットの変更がある場合は作業を中断すること  
 
-
 ---
 
 # 🧭 処理の全体フロー
@@ -59,7 +58,6 @@ description: "GitHub Issue Runner for Codex (interactive issue selection)"
 9. PR 作成（Issue と自動リンク）
 10. Issue へのコメント
 11. 完了報告
-
 
 ---
 
@@ -83,7 +81,6 @@ git status --short
 git remote -v
 - GitHub ではない or 認証エラーなら説明して終了。
 
-
 ---
 
 ## 1. Issue 情報を取得して要約
@@ -101,7 +98,6 @@ Issue を取得：gh issue view ISSUE_NUMBER --json number,title,body,url,state,
 
 状態が `closed` の場合：
 → 「Issue が既に closed なので終了します」と説明して終了。
-
 
 ---
 
@@ -140,7 +136,6 @@ Issue の内容に基づいて：
 
 を文章で説明する。
 
-
 ---
 
 ## 4. 実装（apply_patch）
@@ -172,7 +167,6 @@ npm run build
 - 再実行  
 - 大規模な問題であれば PR 本文に記載するためメモする  
 
-
 ---
 
 ## 6. コミットの作成
@@ -196,13 +190,19 @@ git push -u origin <ブランチ名>
 
 エラーが出た場合は理由を説明し、安全策を案内する。
 
-
 ---
 
 ## 8. PR を作成
 - PR タイトルと本文は日本語で記載する。
+- PowerShell では `\n` は改行に展開されないので、PR 本文は必ずヒアストリング（`@' ... '@`）で渡す。
 コマンド例:  
-gh pr create --title "Fix: #ISSUE_NUMBER <短い説明>" --body "<PR内容を説明する文章>"
+gh pr create --title "Fix: #ISSUE_NUMBER <短い説明>" --body @'
+変更内容
+- ここに箇条書き
+
+## テスト
+- 実行したテスト
+'@
 
 可能ならラベル追加：gh issue edit ISSUE_NUMBER --add-label "review-requested"
 
@@ -211,11 +211,21 @@ gh pr create --title "Fix: #ISSUE_NUMBER <短い説明>" --body "<PR内容を説
 ---
 
 ## 9. Issue へのコメント（必須）
-PR 作成後、Issue に次の形式でコメントを投稿する。PR の URL とブランチ名を必ず埋めること。
+PR 作成後、Issue に次の形式でコメントを投稿する。PR の URL とブランチ名を必ず埋めること。改行崩れを防ぐため、ここでもヒアストリングを使用する。
 
 ```
-gh issue comment ISSUE_NUMBER \
-  --body "🤖 **AI自動実装完了**\n\nレビュー依頼をお願いします。\n\n**プルリクエスト**: {PRのURL}\n**ブランチ**: {ブランチ名}\n\n---\nこのコメントはCodexによって自動投稿されました。\n必ず人間によるコードレビューを実施してください。"
+gh issue comment ISSUE_NUMBER --body @'
+🤖 **AI自動実装完了**
+
+レビュー依頼をお願いします。
+
+**プルリクエスト**: {PRのURL}
+**ブランチ**: {ブランチ名}
+
+---
+このコメントはCodexによって自動投稿されました。
+必ず人間によるコードレビューを実施してください。
+'@
 ```
 
 ラベル付けが必要な場合はこの後に実施する。
